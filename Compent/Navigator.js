@@ -18,6 +18,8 @@ import RegisterView from '../src/Login/RegisterView';
 import ProtectView from '../src/Login/ProtectView';
 import ForgetPWDView from '../src/Login/ForgetPWDView';
 import EmailTextView from '../src/Login/EmailTextView';
+import ResetPWDView from '../src/Login/ResetPWDView';
+import ResetSucessView from '../src/Login/ResetSucessView';
 
 /**
  * CardStackStyleInterpolator
@@ -130,6 +132,8 @@ const Navigator = StackNavigator(
         ProtectView:{screen:ProtectView},
         ForgetPWDView:{screen:ForgetPWDView},
         EmailTextView:{screen:EmailTextView},
+        ResetPWDView:{screen:ResetPWDView},
+        ResetSucessView:{screen:ResetSucessView},
     },
     {
         navigationOptions:{

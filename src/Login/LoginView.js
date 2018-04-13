@@ -16,6 +16,7 @@ import React, { Component } from 'react';
 import Msg from '../../Compent/LoadingMsg';
 import RegisterView from './RegisterView';
 import ForgetPWDView from './ForgetPWDView';
+import globar from '../../Compent/Globar';
 
 const {width,height}=Dimensions.get('window');
 var userPlaceHolder='uncoinex@qq.com';
@@ -42,6 +43,8 @@ export default class LoginView extends Component{
         let err='';
         if(this.state.usreName === ''){
             err = '请输入邮箱';
+        }else if(!globar.emailRegular.test(this.state.usreName)){
+            err = '邮箱格式不正确';
         }else if(this.state.pwd === ''){
             err = '请输入密码';
         }

@@ -14,6 +14,7 @@ import {
 
 import Nav from './Compent/Navigator';
 
+
 export default class App extends Component {
   render() {
     return (

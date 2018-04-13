@@ -10,36 +10,33 @@ import {
     Keyboard,
 } from 'react-native';
 
-import Msg from '../../Compent/LoadingMsg';
-import ResetPWDView from './ResetPWDView';
 
 const {width,height}=Dimensions.get('window');
 export default class EmailTextView extends Component{
     constructor(props){
         super(props);
+        
     }
 
     static navigationOptions = {
         header:null,
     }
-    
     emailCodeClick(){
-        this.props.navigation.navigate('ResetPWDView');
+        this.props.navigation.goBack('LoginView');
     }
-    
-    render(){
 
-        var emailStr=this.props.navigation.state.params.email;
+    render(){
+        let isRec = this.props.navigation.state.params.isRec;
+
         return(
             <View style={stypes.contian}>
-                <Text style={stypes.headerText}>邮箱验证</Text>
-                <Image source={require('../../Images/图标/mailverify.png')} style={stypes.imageIcon} resizeMode='center'/>
-                <Text style = {stypes.validationText}>验证您的邮箱</Text>
-                <Text style={stypes.contentText} numberOfLines = {2}>激活邮件已发送至{emailStr},请登录您的邮箱进行激活,该链接15分钟内有效</Text>
+                <Text style={stypes.headerText}>重置成功</Text>
+                <Image source={require('../../Images/图标/成功提示图标.png')} style={stypes.imageIcon} resizeMode='center'/>
+                <Text style = {stypes.validationText}>{isRec?`邮件已发送至${this.props.navigation.state.params.email}`:'密码重置成功,立即登录'}</Text>
+                <Text style={stypes.contentText}>{isRec?'请前往邮箱激活账户，否则将无法正常登陆':''}</Text>
                 <TouchableOpacity activeOpacity = {1} onPress = {() => this.emailCodeClick()}>
-                    <Text style={stypes.emailCodeText}>邮箱验证码</Text>
+                    <Text style={stypes.emailCodeText}>确定</Text>
                 </TouchableOpacity>
-                <View style={{height:1,marginLeft:50,marginRight:50,backgroundColor:'#fff'}}></View>
             </View>
         )
     }
@@ -64,9 +61,9 @@ const stypes=StyleSheet.create({
     },
     imageIcon:{
         marginTop:64,
-        marginLeft:width/2.0-45,
-        width:90,
-        height:75,
+        marginLeft:width/2.0-40,
+        width:80,
+        height:80,
     },
     validationText:{
         marginTop:5,
@@ -79,11 +76,11 @@ const stypes=StyleSheet.create({
         fontSize:14
     },
     contentText:{
-        marginTop:40,
+        marginTop:5,
         marginLeft:25,
         marginRight:25,
         textAlign:'center',
-        color:'#fff',
+        color:'rgb(255,182,0)',
         fontSize:14,
     },
     emailCodeText:{
@@ -91,10 +88,10 @@ const stypes=StyleSheet.create({
         marginLeft:50,
         marginRight:50,
         height:35,
-        borderBottomWidth:1,
-        borderBottomColor:'#fff',
+        borderWidth:1,
+        borderColor:'rgb(255,182,0)',
         lineHeight:35,
         textAlign:'center',
-        color:'#fff'
+        color:'rgb(255,182,0)'
     }
 });

@@ -13,6 +13,7 @@ import {
 
 import Msg from '../../Compent/LoadingMsg';
 import ProtectView from './ProtectView';
+import globar from '../../Compent/Globar';
 
 const {width,height}=Dimensions.get('window');
 export default class RegisterView extends Component{
@@ -42,6 +43,8 @@ export default class RegisterView extends Component{
         let err='';
         if(this.state.emailText === ''){
             err = '请输入邮箱';
+        }else if(!globar.emailRegular.test(this.state.emailText)){
+            err = '邮箱格式不正确';
         }else if(this.state.passWold === ''){
             err = '请输入密码';
         }else if(this.state.surePassWord === ''){
@@ -59,6 +62,7 @@ export default class RegisterView extends Component{
 
             return ;
         }
+        this.props.navigation.navigate('ResetSucessView',{'isRec':true,'email':this.state.emailText});
     }
 
     gotoLoginClick(){
