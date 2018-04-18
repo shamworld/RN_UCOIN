@@ -55,7 +55,7 @@ export default class LoginView extends Component{
             });
             return ;
         }
-
+        this.props.navigation.replace('MarkView');
 
     }
     //忘记密码

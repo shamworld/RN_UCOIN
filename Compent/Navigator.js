@@ -20,6 +20,7 @@ import ForgetPWDView from '../src/Login/ForgetPWDView';
 import EmailTextView from '../src/Login/EmailTextView';
 import ResetPWDView from '../src/Login/ResetPWDView';
 import ResetSucessView from '../src/Login/ResetSucessView';
+import CollectionView from '../src/Mark/CollectionView';
 
 /**
  * CardStackStyleInterpolator
@@ -110,7 +111,7 @@ const Tap = TabNavigator(
         backBehavior:'none',//按back键是否跳转到第一个tab
         lazy:true,//懒加载
         tabBarOptions:{
-            activeTintColor:'rgb(27,39,45)',
+            activeTintColor:'rgb(255,182,0)',
             inactiveTintColor:'#ffffff',//未选中的颜色
             style:{
                 backgroundColor:'rgb(38,54,64)'
@@ -134,6 +135,7 @@ const Navigator = StackNavigator(
         EmailTextView:{screen:EmailTextView},
         ResetPWDView:{screen:ResetPWDView},
         ResetSucessView:{screen:ResetSucessView},
+        CollectionView:{screen:CollectionView},
     },
     {
         navigationOptions:{
@@ -144,7 +146,7 @@ const Navigator = StackNavigator(
             },
             headerBackTitle:null,
             headerStyle:{
-                backgroundColor:'rgb(27,39,45)'//导航背景色
+                backgroundColor:'rgb(38,54,64)'//导航背景色
             },
             headerTintColor:'rgb(196,199,201)',//导航字的颜色
             

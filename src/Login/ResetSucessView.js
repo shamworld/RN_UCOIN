@@ -8,7 +8,9 @@ import {
     StyleSheet,
     TextInput,
     Keyboard,
+    
 } from 'react-native';
+import {NavigationActions} from 'react-navigation';
 
 
 const {width,height}=Dimensions.get('window');
@@ -22,7 +24,13 @@ export default class EmailTextView extends Component{
         header:null,
     }
     emailCodeClick(){
-        this.props.navigation.goBack('LoginView');
+        const resetAction = NavigationActions.reset({//重置导航为login
+            index:0,
+            actions:[
+                NavigationActions.navigate({routeName:'LoginView'}),
+            ]
+        });
+        this.props.navigation.dispatch(resetAction);
     }
 
     render(){
