@@ -14,6 +14,8 @@ import MarkItem from './MarkItem';
 import Config from '../../Compent/config';
 import Request from '../../Compent/Request';
 const {width,height}=Dimensions.get('window');
+import Msg from '../../Compent/LoadingMsg';
+
 export default class MarkListView extends Component{
 
     constructor(props){

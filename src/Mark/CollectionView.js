@@ -17,7 +17,9 @@ export default class CollectionView extends Component{
         super(props);
         
     }
-
+    static navigationOptions = {
+        title:'收藏',
+    }
     render(){
 
         return (

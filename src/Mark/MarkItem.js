@@ -126,8 +126,8 @@ const styles=StyleSheet.create({
         textAlign:'center',
     },
     interest_red:{
-        backgroundColor:'rgb(62,107,0)',
-        color:'red',
+        backgroundColor:'red',
+        color:'white',
         lineHeight:30,
         textAlign:'center',
 
