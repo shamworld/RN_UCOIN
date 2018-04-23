@@ -23,8 +23,8 @@ export default class TradingContent extends Component{
     render(){
         return(
             <View style={stypes.contain}>
-                <TradingLeftView style={{width:width/2.0}}/>
-                <TradingRightView style={{width:width/2.0}}/>
+                <TradingLeftView type={this.props.type} style={{width:width/2.0}}/>
+                <TradingRightView type={this.props.type} style={{width:width/2.0}}/>
             </View>
         )
     }

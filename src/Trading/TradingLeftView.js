@@ -17,6 +17,8 @@ import Request from '../../Compent/Request';
 const {width,height}=Dimensions.get('window');
 import Msg from '../../Compent/LoadingMsg';
 
+
+
 export default class TradingLeftView extends Component{
     constructor(props){
         super(props);
@@ -27,11 +29,22 @@ export default class TradingLeftView extends Component{
             slider_x:0,
             sliderValue:0,
         }
+        console.log(this.props);
     }
     render(){
+        let titleStr='';
+        if(this.props.type==1){
+            titleStr='可用UT:15204123.101500';
+        }else if (this.props.type==2){
+            titleStr='可用BTC:324123.321100';
+        }
         return(
             <View style={stypes.contain}>
-                <Text style={stypes.canUserText}>可用UT:15204123.1015000</Text>
+                <Text style={stypes.canUserText}>
+                {
+                    titleStr
+                } 
+                </Text>
                 <TextInput 
                 placeholder='买价'
                 placeholderTextColor='rgb(164,173,178)'
@@ -48,7 +61,7 @@ export default class TradingLeftView extends Component{
                 onChangeText = {(text) => this.setState({numbers:text})}
                 />
                 <ImageBackground 
-                source={require('../../Images/图标/percentage-green.png')}
+                source={this.props.type==1?require('../../Images/图标/percentage-green.png'):require('../../Images/图标/percentage-red.png')}
                 style={{marginLeft:this.state.slider_x,marginTop:3,width:35,height:25}}
                 resizeMode='cover'
                 >
@@ -64,7 +77,7 @@ export default class TradingLeftView extends Component{
                 onChangeText = {(text) => this.setState({totalAmount:text})}
                 />
                 <TouchableOpacity>
-                    <Text style={stypes.buyBtn}>买入</Text>
+                    <Text style={this.props.type==1?stypes.buyBtn:stypes.sellBtn}>买入</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -88,7 +101,7 @@ const stypes=StyleSheet.create({
     },
     priceText:{
         color:'white',
-        marginTop:20,
+        marginTop:10,
         backgroundColor:'rgb(38,54,64)',
         fontSize:12,
         borderWidth:1,
@@ -116,5 +129,16 @@ const stypes=StyleSheet.create({
         textAlign:'center',
         lineHeight:30
     },
+    sellBtn:{
+        color:'white',
+        marginTop:20,
+        backgroundColor:'red',
+        fontSize:12,
+        borderWidth:1,
+        marginLeft:10,
+        height:30,
+        textAlign:'center',
+        lineHeight:30
+    }
 
 })

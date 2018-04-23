@@ -9,6 +9,7 @@ import {
 }from 'react-native';
 import React, { Component } from 'react';
 import TradingContent from './TradingContent';
+import EntrustListView from './EntrustListView';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 const {width,height}=Dimensions.get('window');
 export default class TradingView extends Component{
@@ -52,7 +53,7 @@ export default class TradingView extends Component{
                     tabBarInactiveTextColor = 'white'
                     tabBarUnderlineStyle={{backgroundColor:'rgb(255,182,0)'}}
                     tabBarBackgroundColor = 'rgb(38,54,64)'
-                    style = {{height:30}}
+                    style = {{height:10}}
                 >
                 {
                     this.state.scrollList.map((item,i)=>{
@@ -60,6 +61,11 @@ export default class TradingView extends Component{
                             return (
                                 <TradingContent key = {i} tabLabel = {item.titile} type = {item.type}
                                     navigator = {this.props.navigator} {...this.props} style={{marginBottom:0}}/>
+                            )
+                        }else if(i==2){
+                            return (
+                                <EntrustListView key = {i} tabLabel = {item.titile} type = {item.type}
+                                    style={{marginBottom:0}}/>
                             )
                         }
                     })

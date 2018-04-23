@@ -8,7 +8,7 @@
 
 const Config = {
     api:{
-        homeList:'http://39.106.211.43:8000/api/',
+        homeList:'http://39.106.148.53:8000/api/',
     },
 };
 
