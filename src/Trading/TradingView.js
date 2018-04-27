@@ -10,6 +10,7 @@ import {
 import React, { Component } from 'react';
 import TradingContent from './TradingContent';
 import EntrustListView from './EntrustListView';
+import MyClinchView from './MyClinchView';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 const {width,height}=Dimensions.get('window');
 export default class TradingView extends Component{
@@ -43,7 +44,7 @@ export default class TradingView extends Component{
                        <Image source={require('../../Images/图标/下拉.png')} style={{marginTop:37,width:10,height:10}}/>
                        </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress = {() => {this.props.navigation.navigate('MyClinchView')}}>
                         <Text style={stypes.navRight}>我的交易</Text>
                     </TouchableOpacity>
                 </View>
@@ -59,12 +60,12 @@ export default class TradingView extends Component{
                     this.state.scrollList.map((item,i)=>{
                         if(i==0||i==1){
                             return (
-                                <TradingContent key = {i} tabLabel = {item.titile} type = {item.type}
+                                <TradingContent tabLabel = {item.titile} type = {item.type}
                                     navigator = {this.props.navigator} {...this.props} style={{marginBottom:0}}/>
                             )
                         }else if(i==2){
                             return (
-                                <EntrustListView key = {i} tabLabel = {item.titile} type = {item.type}
+                                <EntrustListView tabLabel = {item.titile} type = {item.type}
                                     style={{marginBottom:0}}/>
                             )
                         }

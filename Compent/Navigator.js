@@ -21,6 +21,11 @@ import EmailTextView from '../src/Login/EmailTextView';
 import ResetPWDView from '../src/Login/ResetPWDView';
 import ResetSucessView from '../src/Login/ResetSucessView';
 import CollectionView from '../src/Mark/CollectionView';
+import MyClinchView from '../src/Trading/MyClinchView';
+import RechargeView from '../src/Asset/RechargeView';
+import DrawalView from '../src/Asset/DrawalView';
+import RecordView from '../src/Asset/RecordView';
+import AddAddressView from '../src/Asset/AddAddressView';
 
 /**
  * CardStackStyleInterpolator
@@ -136,6 +141,11 @@ const Navigator = StackNavigator(
         ResetPWDView:{screen:ResetPWDView},
         ResetSucessView:{screen:ResetSucessView},
         CollectionView:{screen:CollectionView},
+        MyClinchView:{screen:MyClinchView},
+        DrawalView:{screen:DrawalView},
+        RechargeView:{screen:RechargeView},
+        RecordView:{screen:RecordView},
+        AddAddressView:{screen:AddAddressView},
     },
     {
         navigationOptions:{
