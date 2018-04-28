@@ -39,7 +39,7 @@ export default class DrawalView extends Component{
     }
 
     securityVerification(){
-        
+        this.props.navigation.navigate('SafeConfirmView');
     }
 
 
@@ -167,6 +167,7 @@ const stypes = StyleSheet.create({
         borderColor:'rgb(56,73,82)',
         borderWidth:1,
         marginTop:10,
+        color:'white'
     
     },
     viewFlex:{

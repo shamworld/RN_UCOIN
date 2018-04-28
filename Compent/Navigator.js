@@ -26,6 +26,8 @@ import RechargeView from '../src/Asset/RechargeView';
 import DrawalView from '../src/Asset/DrawalView';
 import RecordView from '../src/Asset/RecordView';
 import AddAddressView from '../src/Asset/AddAddressView';
+import AddressListView from '../src/Asset/AddressListView';
+import SafeConfirmView from '../src/Asset/SafeConfirmView';
 
 /**
  * CardStackStyleInterpolator
@@ -146,6 +148,8 @@ const Navigator = StackNavigator(
         RechargeView:{screen:RechargeView},
         RecordView:{screen:RecordView},
         AddAddressView:{screen:AddAddressView},
+        AddressListView:{screen:AddressListView},
+        SafeConfirmView:{screen:SafeConfirmView},
     },
     {
         navigationOptions:{
