@@ -28,6 +28,14 @@ import RecordView from '../src/Asset/RecordView';
 import AddAddressView from '../src/Asset/AddAddressView';
 import AddressListView from '../src/Asset/AddressListView';
 import SafeConfirmView from '../src/Asset/SafeConfirmView';
+import ChangeLoginPWDView from '../src/System/ChangeLoginPWDView';
+import ProveView from '../src/System/ProveView';
+import SettingView from '../src/System/SettingView';
+import LanguageView from '../src/System/LanguageView';
+import UploadDocumentsView from '../src/System/UploadDocumentsView';
+import CertificationSucView from '../src/System/CertificationSucView';
+import CertificationErrorView from '../src/System/CertificationErrorView';
+
 
 /**
  * CardStackStyleInterpolator
@@ -150,6 +158,13 @@ const Navigator = StackNavigator(
         AddAddressView:{screen:AddAddressView},
         AddressListView:{screen:AddressListView},
         SafeConfirmView:{screen:SafeConfirmView},
+        ChangeLoginPWDView:{screen:ChangeLoginPWDView},
+        ProveView:{screen:ProveView},
+        SettingView:{screen:SettingView},
+        LanguageView:{screen:LanguageView},
+        UploadDocumentsView:{screen:UploadDocumentsView},
+        CertificationSucView:{screen:CertificationSucView},
+        CertificationErrorView:{screen:CertificationErrorView},
     },
     {
         navigationOptions:{

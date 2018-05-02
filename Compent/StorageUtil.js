@@ -1,9 +1,6 @@
 import React ,{Component} from 'react';
 import {AsyncStorage} from 'react-native';
 import Storage from 'react-native-storage';
-
-import sync from './sync';
-
 var storage = new Storage({
     //最大容量，默认值1000条史苏句循环储存
     size:1000,

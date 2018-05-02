@@ -14,7 +14,7 @@ import {NavigationActions} from 'react-navigation';
 
 
 const {width,height}=Dimensions.get('window');
-export default class EmailTextView extends Component{
+export default class ResetSucessView extends Component{
     constructor(props){
         super(props);
         
