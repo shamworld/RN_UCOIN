@@ -9,14 +9,22 @@ import {
     TextInput,
     Keyboard,
     Button,
-    Alert
+    Alert,
+    Platform
 
 }from 'react-native';
 import React, { Component } from 'react';
 import Msg from '../../Compent/LoadingMsg';
+// import Loading from '../../Compent/loadingNew';
 import RegisterView from './RegisterView';
 import ForgetPWDView from './ForgetPWDView';
 import globar from '../../Compent/Globar';
+import LoginMobileView from './LoginMobileView';
+import LoginGoogleView from './LoginGoogleView';
+import storage from '../../Compent/StorageUtil';
+import Config from '../../Compent/config';
+import Request from '../../Compent/Request';
+import Load from '../../Compent/loading';
 
 const {width,height}=Dimensions.get('window');
 var userPlaceHolder='uncoinex@qq.com';
@@ -27,6 +35,9 @@ export default class LoginView extends Component{
             usreName:'',
             pwd:'',
             msg:'',
+            login_key:'',
+            loadingText:'',
+            type:0
         });
     }
     
@@ -50,13 +61,69 @@ export default class LoginView extends Component{
         }
 
         if(err !== ''){
-            this.setState({msg:err},() => {
-                this.Msg.show();
+            this.setState({loadingText:err,type:3},() => {
+                this.Load.show();
             });
             return ;
         }
-        this.props.navigation.replace('MarkView');
+        // this.LoginMobileView.show();
 
+        this.requestLogin();
+
+
+        // this.props.navigation.replace('MarkView');
+
+    }
+
+    requestLogin(){
+        // this.setState({loadingText:'正在加载...',type:2},() => {
+        //     this.Load.show();
+        // });
+        let params={
+            login_field:this.state.usreName,
+            password:this.state.pwd,
+            client:Platform.OS == 'android'?'3':Platform.OS == 'ios'?'4':''
+        }
+
+        Request.post(Config.api.homeList+'v2/auth/login',params,false).then((data)=>{
+            // this.Load.hide();
+            console.log(data);
+            if(data.code==0){
+                console.log(data);
+                  if(data.data.validate_type=='none'){
+                    storage.save({
+                        key:'userToken',
+                        data:{
+                            access_token:data.data.token.access_token,
+                            token_type:data.data.token.token_type,
+                            refresh_token:data.data.token.refresh_token
+                        }
+                    })
+                    this.props.navigation.replace('MarkView');
+                  }else if(data.data.validate_type=='google'){
+                    this.setState({login_key:data.data.login_key},() => {
+                        this.LoginGoogleView.show();
+                    });
+                    
+                  }else if(data.data.validate_type=='mobile'){
+                    
+                    this.setState({login_key:data.data.login_key},() => {
+                        this.LoginMobileView.show();
+                    });
+                    
+                  }
+            }else if (data.code==9001){
+
+            }else{
+                this.setState({loadingText:data.msg,type:3},()=>{
+                    this.Load.show();
+                });
+            }
+        },(err)=>{
+            this.Load.hide();
+            console.log('错误信息'+err);
+            alert(err);
+        });
     }
     //忘记密码
     forgetPwd(){
@@ -96,9 +163,22 @@ export default class LoginView extends Component{
                         </View>
                     </TouchableOpacity>
                 </TouchableOpacity>
-                <Msg 
-                ref = {(Msg) => this.Msg = Msg}
-                title = {this.state.msg}
+                
+              
+                <LoginMobileView 
+                ref = {(LoginMobileView) => this.LoginMobileView = LoginMobileView}
+                login_key={this.state.login_key}
+                mobileClick={()=>this.props.navigation.replace('MarkView')}
+                />
+                <LoginGoogleView 
+                ref = {(LoginGoogleView) => this.LoginGoogleView = LoginGoogleView}
+                login_key={this.state.login_key}
+                googleClick = {()=>this.props.navigation.replace('MarkView')}
+                />
+                <Load 
+                ref = {(Load) => this.Load = Load}
+                title = {this.state.loadingText}
+                type = {this.state.type}
                 />
             </View>
             

@@ -9,11 +9,15 @@ import {
     StyleSheet,
     TextInput,
     Keyboard,
+    Platform,
+    Alert,
 } from 'react-native';
 
 import Msg from '../../Compent/LoadingMsg';
 import ProtectView from './ProtectView';
 import globar from '../../Compent/Globar';
+import Config from '../../Compent/config';
+import Request from '../../Compent/Request';
 
 const {width,height}=Dimensions.get('window');
 export default class RegisterView extends Component{
@@ -35,6 +39,7 @@ export default class RegisterView extends Component{
     }
 
     privacyProtectionClick(){
+        
         this.props.navigation.navigate('ProtectView');
     }
 
@@ -62,9 +67,33 @@ export default class RegisterView extends Component{
 
             return ;
         }
-        this.props.navigation.navigate('ResetSucessView',{'isRec':true,'email':this.state.emailText});
+        this.requestRegister();
+        
     }
+    requestRegister(){
+        let params={
+            email:this.state.emailText,
+            password:this.state.passWold,
+            password_confirmation:this.state.surePassWord,
+            pid:this.state.pid
+        }
 
+        Request.post(Config.api.homeList+'v2/email/register',params,false).then((data)=>{
+            if(data.code==0){
+                this.props.navigation.navigate('ResetSucessView',{'isRec':true,'email':this.state.emailText});   
+            }else if (data.code==9001){
+
+            }else{
+                this.setState({msg:data.msg},()=>{
+                    this.Msg.show();
+                });
+            }
+        },(err)=>{
+            console.log('错误信息'+err);
+            alert(err);
+        });
+        
+    }
     gotoLoginClick(){
         Keyboard.dismiss()
         this.props.navigation.goBack();

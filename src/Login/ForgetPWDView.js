@@ -10,10 +10,14 @@ import {
     Keyboard,
 } from 'react-native';
 
-import Msg from '../../Compent/LoadingMsg';
+import Msg from '../../Compent/loading';
 import EmailTextView from './EmailTextView';
 import globar from '../../Compent/Globar';
+import Config from '../../Compent/config';
+import Request from '../../Compent/Request';
+import CountDownButton from '../../Compent/CountDownButton';
 const {width,height}=Dimensions.get('window');
+
 export default class ForgetPWDView extends Component{
 
     constructor(props){
@@ -21,6 +25,8 @@ export default class ForgetPWDView extends Component{
         this.state = ({
             emailText:'',
             msg:'',
+            code:'',
+            type:0,
         });
     }
 
@@ -31,19 +37,92 @@ export default class ForgetPWDView extends Component{
     suerBtnClick(){
         Keyboard.dismiss();
         if(this.state.emailText === ''){
-            this.setState({msg:'请输入邮箱'},() => {
+            this.setState({msg:'请输入邮箱',type:3},() => {
                 this.Msg.show();
             });
 
             return;
         }else if(!globar.emailRegular.test(this.state.emailText)){
-            this.setState({msg:'邮箱格式不正确'},() => {
+            this.setState({msg:'邮箱格式不正确',type:3},() => {
+                this.Msg.show();
+            });
+
+            return;
+        }else if(this.state.code === ''){
+            this.setState({msg:'请输入验证码',type:3},() => {
                 this.Msg.show();
             });
 
             return;
         }
-        this.props.navigation.navigate('EmailTextView',{'email':this.state.emailText});
+        this.requestEmailChech();
+        
+    }
+
+    requestEmailChech(){
+        this.setState({msg:'正在验证...',type:2},() => {
+            this.Msg.show();
+        });
+        
+        let pramas={email:this.state.emailText,code:this.state.code};
+        Request.post(Config.api.homeList+'v2/email/check-code',pramas,false).then((data)=>{
+            // this.Msg.hide();
+            console.log(data);
+            if(data.code==0){
+                this.props.navigation.navigate('EmailTextView',{'email':this.state.emailText,'data':data.data});
+            }else if (data.code==9001){
+
+            }else{
+                this.setState({msg:data.msg,type:3},()=>{
+                    this.Msg.show();
+                });
+            }
+        },(err)=>{
+            this.Msg.hide();
+            console.log('错误信息'+err);
+            alert(err);
+        });
+
+    }
+    //获取验证码
+    requestMobileCode(anyWay){
+        Keyboard.dismiss();
+        if(this.state.emailText === ''){
+            this.setState({msg:'请输入邮箱',type:3},() => {
+                this.Msg.show();
+            });
+            anyWay(false);
+            return ;
+        }else if(!globar.emailRegular.test(this.state.emailText)){
+            this.setState({msg:'邮箱格式不正确',type:3},() => {
+                this.Msg.show();
+            });
+            anyWay(false);
+            return ;
+        }
+        let pramas={email:this.state.emailText};
+        Request.post(Config.api.homeList+'v2/email/send',pramas,false).then((data)=>{
+            console.log(data);
+            if(data.code==0){
+                anyWay(true);
+                this.setState({msg:'发送成功',type:3},()=>{
+                    
+                });
+                this.Msg.show();
+            }else if (data.code==9001){
+
+            }else{
+                this.setState({msg:data.msg,type:3},()=>{
+                    
+                });
+                this.Msg.show();
+                anyWay(false);
+            }
+        },(err)=>{
+            console.log('错误信息'+err);
+            alert(err);
+            anyWay(false);
+        });
     }
     hideKeyBoard(){
         Keyboard.dismiss();
@@ -60,6 +139,36 @@ export default class ForgetPWDView extends Component{
                                 onChangeText = {(text) => this.setState({emailText:text})}
                                 style = {stypes.emailInput}
                         />
+                        <Text style = {stypes.emailLabel}>验证码</Text>
+                        <View style={{flexDirection:'row'}}>
+                            <TextInput 
+                                    value = {this.state.code}
+                                    onChangeText = {(text) => this.setState({code:text})}
+                                    style = {[stypes.emailInput,{width:width-40-130,marginRight:0}]}
+                            />
+                            <CountDownButton 
+                            enable={true}
+                            style={{marginLeft:10,marginRight:20,backgroundColor:'rgb(77,100,112)',height:35,marginTop:5}}
+                            textStyle={{color: 'rgb(196,199,207)'}}
+                            timerCount={60}
+                            timerTitle={'获取验证码'}
+                            timerActiveTitle={['请在（','s）后重试']}
+                            onClick={(_shouldStartCountting)=>{
+                            // shouldStartCountting是一个回调函数，根据调用接口的情况在适当的时候调用它来决定是否开始倒计时
+                            //请求接口返回是否发送验证码成功 然后回调回去
+                            this.requestMobileCode(_shouldStartCountting);
+                            // _shouldStartCountting(isRec);
+                            // alert(shouldStartCountting);
+                            }}
+                            timerEnd={
+                                ()=>{
+                                    this.setState({
+                                        state: '重新发送'
+                                    })
+                                }
+                            }
+                            />
+                        </View>
                         <View style={{marginTop:40}}>
                             <TouchableOpacity activeOpacity = {1} onPress = {() => this.suerBtnClick()}>
                                 <Text style={stypes.suerBtn}>确定</Text>
@@ -67,7 +176,7 @@ export default class ForgetPWDView extends Component{
                         </View>
                     </View>
                </TouchableOpacity>
-               <Msg ref = {(Msg) => this.Msg = Msg} title = {this.state.msg}/>
+               <Msg ref = {(Msg) => this.Msg = Msg} title = {this.state.msg} type={this.state.type}/>
             </View>
         )
     }
@@ -83,7 +192,7 @@ const stypes=StyleSheet.create({
         backgroundColor:'rgb(27,39,45)',
     },
     emailLabel:{
-        marginTop:30,
+        marginTop:10,
         color:'rgb(196,199,201)',
         fontSize:14,
         marginLeft:20,

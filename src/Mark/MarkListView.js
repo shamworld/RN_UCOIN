@@ -47,7 +47,7 @@ export default class MarkListView extends Component{
     }
 
     requestMarkList(){
-       Request.get(Config.api.homeList+'v2/market/list?'+this.state.sorting,(data) => {
+       Request.get(Config.api.homeList+'v2/market/list?'+this.state.sorting,false).then((data) => {
            console.log(this.state.type);
         let items=this.state.type==='1'?data.data.btc:data.data.ut;
         setTimeout(() => {

@@ -54,20 +54,20 @@ export default class LoadingMsg extends Component {
     }
     render() {
       return(
-          <View  style={styles.container} >
-               <Modal
-                  animationType='fade'                                  // 淡入
-                  transparent={true}                                    // 透明
-                  visible={this.state.visible}                          // 根据isModal决定是否显示
-                  onRequestClose={() => {this.props.back&&this.setState({visible:false})}}        // android必须实现
-               > 
-                <TouchableOpacity  onPress={()=>{this.props.touch&&this.setState({visible:false})}}     activeOpacity={1} style={styles.Modalcontainer}>
-                    <View style={[styles.modalViewStyle,{width:this.props.width,height:40}]}>
-                          <Text style={{fontSize:16,color:'#181818'}} >{this.props.title||'加载中...'}</Text>
-                     </View>
-                </TouchableOpacity >
-              </Modal>
-          </View>
+               <View>
+                <Modal
+                    animationType='fade'                                  // 淡入
+                    transparent={true}                                    // 透明
+                    visible={this.state.visible}                          // 根据isModal决定是否显示
+                    onRequestClose={() => {this.props.back&&this.setState({visible:false})}}        // android必须实现
+                > 
+                  <TouchableOpacity onPress={()=>{this.props.touch&&this.setState({visible:false})}} activeOpacity={1} style={styles.Modalcontainer}>
+                          <View style={[styles.modalViewStyle,{width:this.props.width,height:40}]}>
+                                <Text style={{fontSize:16,color:'#181818'}} >{this.props.title}</Text>
+                          </View>
+                  </TouchableOpacity >
+                </Modal>
+               </View>
         );
     }
  
