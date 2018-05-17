@@ -10,8 +10,13 @@ import {
     Keyboard,
 } from 'react-native';
 
-import Msg from '../../Compent/LoadingMsg';
+import Msg from '../../Compent/loading';
 const {width,height}=Dimensions.get('window');
+
+import globar from '../../Compent/Globar';
+import Config from '../../Compent/config';
+import Request from '../../Compent/Request';
+
 export default class ResetPWDView extends Component{
 
     constructor(props){
@@ -20,6 +25,7 @@ export default class ResetPWDView extends Component{
             newPwd:'',
             surePwd:'',
             msg:'',
+            type:3
         });
     }
 
@@ -43,13 +49,43 @@ export default class ResetPWDView extends Component{
         }
 
         if(err !== ''){
-            this.setState({msg:err},() => {
+            this.setState({msg:err,type:3},() => {
                 this.Msg.show();
             })
 
             return ;
         }
-        this.props.navigation.navigate('ResetSucessView',{'isRec':false});
+        this.requestRegistPWD();
+    }
+    requestRegistPWD(){
+        Keyboard.dismiss();
+         this.setState({msg:'正在加载...',type:2},() => {
+            this.Msg.show();
+        });
+        let params={
+            password:this.state.newPwd,
+            password_confirmation:this.state.surePwd,
+            forget_password_key:this.props.navigation.state.params.data,
+        }
+        Request.post(Config.api.homeList+'v2/security/password-reset',params,false).then((data)=>{
+            // this.Load.hide();
+            console.log(data);
+            if(data.code==0){
+                console.log(data);
+                this.Msg.hide();
+                this.props.navigation.navigate('ResetSucessView',{'isRec':false});
+            }else if (data.code==9001){
+
+            }else{
+                this.setState({loadingText:data.msg,type:3},()=>{
+                    this.Load.show();
+                });
+            }
+        },(err)=>{
+            this.Load.hide();
+            console.log('错误信息'+err);
+            alert(err);
+        });
     }
     hideKeyBoard(){
         Keyboard.dismiss();
@@ -79,7 +115,7 @@ export default class ResetPWDView extends Component{
                         </View>
                     </View>
                </TouchableOpacity>
-               <Msg ref = {(Msg) => this.Msg = Msg} title = {this.state.msg}/>
+               <Msg ref = {(Msg) => this.Msg = Msg} title = {this.state.msg} type={this.state.type}/>
             </View>
         )
     }

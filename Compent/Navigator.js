@@ -36,7 +36,9 @@ import UploadDocumentsView from '../src/System/UploadDocumentsView';
 import CertificationSucView from '../src/System/CertificationSucView';
 import CertificationErrorView from '../src/System/CertificationErrorView';
 
-
+/**
+ * 打包 react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/ios.jsbundle
+ */
 /**
  * CardStackStyleInterpolator
  * forHorizontal:从右向左进入、forVertical:从下向上进入、forFadeFromBottomAndroid:从底部淡出
@@ -180,7 +182,7 @@ const Navigator = StackNavigator(
             headerTintColor:'rgb(196,199,201)',//导航字的颜色
             
         },
-        initialRouteName:'LoginView',//默认显示界面
+        initialRouteName:'MarkView',//默认显示界面
         transitionConfig:TransitionConfiguration,//页面动画
         onTransitionStart:()=>{ console.log('导航栏切换开始'); },  // 回调
         onTransitionEnd: ()=>{ console.log('导航栏切换结束'); },  // 回调

@@ -29,7 +29,9 @@ export default class MarkHeadView extends Component{
                                 {itemData.name}
                              </Text>
                             <Text style={styles.BTCText_right}>
-                                 /BTC
+                                 {
+                                     this.props.type==1?'/BTC':this.props.type==2?'/ETH':'/UT'
+                                 }
                              </Text>
                         </View>
 

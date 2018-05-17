@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.js  --platform ios --dev false --bundle-output ./ios/bundle/index.jsbundle --assets-dest ./ios/bundle",
     "test": "jest"
   },
   "dependencies": {
     "prop-types": "^15.6.1",
     "react": "16.3.1",
     "react-native": "0.55.2",
+    "react-native-image-picker": "^0.26.10",
     "react-native-keyboard-aware-scroll-view": "^0.5.0",
     "react-native-root-siblings": "^3.0.0",
     "react-native-scrollable-tab-view": "^0.8.0",

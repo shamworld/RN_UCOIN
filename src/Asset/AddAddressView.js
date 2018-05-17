@@ -14,6 +14,9 @@ import {
 }from 'react-native';
 import React, { Component } from 'react';
 import Msg from '../../Compent/LoadingMsg';
+import Load from '../../Compent/loading';
+import Config from '../../Compent/config';
+import Request from '../../Compent/Request';
 
 const {width,height}=Dimensions.get('window');
 export default class AddAddressView extends Component{
@@ -23,7 +26,9 @@ export default class AddAddressView extends Component{
         this.state = {
             addressText:'',
             labelText:'',
-            msg:''
+            msg:'',
+            loadText:'',
+            type:0,
         }
     }
 
@@ -39,7 +44,7 @@ export default class AddAddressView extends Component{
     })
 
     popAddressListView(){
-        this.props.navigation.navigate('AddressListView');
+        this.props.navigation.navigate('AddressListView',{id:this.props.navigation.state.params.id});
     }
     componentDidMount(){
         this.props.navigation.setParams({popAddressListView:this.popAddressListView.bind(this)});
@@ -60,11 +65,40 @@ export default class AddAddressView extends Component{
             });
             return ;
         }
-        this.setState({msg:'添加成功'},() => {
-            this.Msg.show();
-        });
+        
         Keyboard.dismiss()
-        this.props.navigation.goBack();
+        this.requestAddAddress();
+        
+    }
+    requestAddAddress(){
+        let params={address:this.state.addressText,tag:this.state.labelText,coin_id:this.props.navigation.state.params.id};
+        Request.post(Config.api.homeList+'v2/address/add',params,true).then((data) => {
+            console.log(data);
+            
+            if(data.code==0){
+     
+                this.setState({msg:'添加成功'},() => {
+                    this.Msg.show();
+                });
+                this.props.navigation.goBack();
+                
+            }else if (data.code==9001){
+                this.setState({loadText:data.msg,type:3},()=>{
+                    this.Load.show();
+                    
+                });
+                // this.props.toLogin();
+            }else{
+                this.setState({loadText:data.msg,type:3},()=>{
+                    this.Load.show();
+                });
+               
+            }
+            },(error) =>{
+                 console.log('错误信息'+error);
+                 this.setState({isLoading:true});
+             })
+        
     }
 
     render(){
@@ -92,6 +126,11 @@ export default class AddAddressView extends Component{
                 <Msg 
                 ref = {(Msg) => this.Msg = Msg}
                 title = {this.state.msg}
+                />
+                <Load 
+                ref = {(Load) => this.Load = Load}
+                title = {this.state.loadText}
+                type = {this.state.type}
                 />
             </View>
         )

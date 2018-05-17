@@ -34,7 +34,7 @@ export default class MarkListView extends Component{
     }
     componentWillMount(){
         
-        this.requestMarkList();
+        this.onRefresh();
     }
     // 下拉刷新
     onRefresh(){
@@ -48,8 +48,8 @@ export default class MarkListView extends Component{
 
     requestMarkList(){
        Request.get(Config.api.homeList+'v2/market/list?'+this.state.sorting,false).then((data) => {
-           console.log(this.state.type);
-        let items=this.state.type==='1'?data.data.btc:data.data.ut;
+           console.log(data);
+        let items=this.state.type==='1'?data.data.btc:this.state.type==='2'?data.data.eth:data.data.ut;
         setTimeout(() => {
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(items),
@@ -66,6 +66,7 @@ export default class MarkListView extends Component{
         return (
             <MarkItem
                 itemData={rowData} 
+                type={this.state.type}
             />
         )
     }

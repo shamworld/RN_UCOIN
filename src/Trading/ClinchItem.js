@@ -8,18 +8,22 @@ import {
 
 }from 'react-native';
 import React, { Component } from 'react';
+import BouncedView from '../../Compent/BouncedView';
 
 const {width,height}=Dimensions.get('window');
 export default class ClinchItem extends Component{
 
     constructor(props){
         super(props);
-        console.log(this.props.data);
+       this.state={
+        bouncedView:'',
+       }
     }
     render(){
         const {coin_name,type,price,created_at,number,fee}=this.props.data;
         return(
             <View style={stypes.contain}> 
+
                 <View style={{height:179}}>
                     <View style={stypes.viewFlexDriction}>
                         <View style={stypes.viewFlexDriction}>
@@ -46,6 +50,9 @@ export default class ClinchItem extends Component{
                     </View>
                 </View>
                 <View style={{backgroundColor:'white',marginLeft:5,marginRight:5,marginBottom:0,height:1}}></View>
+                {
+                    // <BouncedView ref = {(BouncedView) => this.BouncedView = BouncedView } suerClick={()=>this.props.onclick()} title = {this.state.bouncedView}/>
+                }
             </View>
             
         )

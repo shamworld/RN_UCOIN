@@ -8,7 +8,7 @@ storage.load({
 
 }).then(res => {
     userDic=res;
-    console.log(userDic);
+    // console.log(userDic);
 }).catch(err => {
     console.log('error:'+err);
 });
@@ -16,16 +16,17 @@ storage.load({
 const Requests = {
     get:(url,isRec) => {
         return new Promise((resolve,reject)=>{
+            console.log(url);
             fetch(url,{
                 method: 'get',
                 headers: isRec?{
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
+                    'Authorization':userDic.token_type+' '+userDic.access_token,
                     'X-Requested-With':'XMLHttpRequest'
                   }:{
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization':userDic.token_type+' '+userDic.access_token,
                     'X-Requested-With':'XMLHttpRequest'
                   },
             })
@@ -40,18 +41,19 @@ const Requests = {
     },
     post:(url,params,isRec) =>{
         //fetch请求
-        console.log('!!!'+userDic.access_token);
+        console.log(url+'  ',params);
         return  new Promise((resolve,reject)=>{
             fetch(url,{
                 method: 'POST',
                 headers: isRec?{
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-Requested-With':'XMLHttpRequest'
+                    'Content-Type': 'application/json;multipart/form-data;charset=utf-8',
+                    'Authorization':userDic.token_type+' '+userDic.access_token,
+                    'X-Requested-With':'XMLHttpRequest',
+                    
                   }:{
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization':userDic.token_type+' '+userDic.access_token,
                     'X-Requested-With':'XMLHttpRequest'
                   },
                 body:JSON.stringify(params)

@@ -8,54 +8,124 @@ import {
     RefreshControl,
     ActivityIndicator,
     Image,
+    DeviceEventEmitter,
 }from 'react-native';
 import React, { Component } from 'react';
 import Config from '../../Compent/config';
 import Request from '../../Compent/Request';
 const {width,height}=Dimensions.get('window');
-import Msg from '../../Compent/LoadingMsg';
+import Load from '../../Compent/loading';
 
 export default class TradingRightView extends Component{
 
     constructor(props){
         super(props);
         this.state = {
-            buyList:[
-                {price:10.000000,num:102.000000},
-                {price:144.000000,num:12.321000},
-                {price:53.000000,num:123.000000},
-                {price:14.000000,num:31.000000},
-                {price:5342.000000,num:342.000000},
-                {price:53.000000,num:123.000000},
-                {price:213.020000,num:141.0200}
-            ],
-            sellList:[
-                {price:10.000000,num:102.000000},
-                {price:144.000000,num:12.321000},
-                {price:53.000000,num:123.000000},
-                {price:213.020000,num:141.0200},
-                {price:14.000000,num:31.000000},
-                {price:5342.000000,num:342.000000},
-                {price:213.020000,num:141.0200}
-            ],
+            buyList:[],
+            sellList:[],
             selectIsRec:true,
-            selectText:'默认'
+            selectText:'默认',
+            coinInfoData:{},
+            loadText:'',
+            type:0,
+            finishPrice:'',
+            finishNum:''
         }
     }
-    
-    sellListItem(item){
+    componentDidMount(){
+        this.msgListener = DeviceEventEmitter.addListener('useredCoin',(data) => {
+            this.requestPriceAndNumList(data),
+            this.requestFinishPrice(data)
+        });
+    }
+    async requestFinishPrice(data){
+        this.setState({coinInfoData:data});
+        await Request.get(Config.api.homeList+'v2/trade/newPrice/'+data.id,true).then((data) => {
+           
+            if(data.code==0){
+
+
+                setTimeout(() => {
+                    this.setState({
+                        finishPrice:data.data.rmb_price,
+                        finishNum:data.data.new_price,
+                    });
+                },0);
+                
+            }else if (data.code==9001){
+                this.setState({loadText:data.msg,type:3},()=>{
+                    this.Load.show();
+                    
+                });
+                // this.props.toLogin();
+            }else{
+                this.setState({loadText:data.msg,type:3},()=>{
+                    this.Load.show();
+                });
+               
+            }
+        
+        },(error) =>{
+             console.log('错误信息'+error);
+             this.setState({isLoading:true});
+         })
+    }
+    async requestPriceAndNumList(data){
+        this.setState({coinInfoData:data});
+        await Request.get(Config.api.homeList+'v2/trade/'+data.id+'decimal=6&limit=16&buyOrder=desc&sellOrder=desc',true).then((data) => {
+           
+            if(data.code==0){
+
+
+                setTimeout(() => {
+                    this.setState({
+                        buyList:data.data.buys,
+                        sellList:data.data.sells,
+                    });
+                },0);
+                
+            }else if (data.code==9001){
+                this.setState({loadText:data.msg,type:3},()=>{
+                    this.Load.show();
+                    
+                });
+                // this.props.toLogin();
+            }else{
+                this.setState({loadText:data.msg,type:3},()=>{
+                    this.Load.show();
+                });
+               
+            }
+        
+        },(error) =>{
+             console.log('错误信息'+error);
+             this.setState({isLoading:true});
+         })
+    }
+
+    sellListItem(item,i,type){
+        if(type==0&&i>=8){
+            return;
+        }else if(type==1&&i>=16){
+            return;
+        }
         return (
-            <View style={{flexDirection:'row',justifyContent:'space-between',height:23}}>
-                <Text style={stypes.sellpriceText}>{item.price}</Text>
-                <Text style={stypes.sellnumText}>{item.num}</Text>
+            <View style={{flexDirection:'row',justifyContent:'space-between',height:23}} key={i}>
+                <Text style={stypes.sellpriceText}>{parseFloat(item.price).toFixed(6)}</Text>
+                <Text style={stypes.sellnumText}>{parseFloat(item.number).toFixed(6)}</Text>
             </View>
         )
     }
-    buyListItem(item){
+    buyListItem(item,i,type){
+        if(type==0&&i>=8){
+            return;
+        }else if(type==1&&i>=16){
+            return;
+        }
         return (
-            <View style={{flexDirection:'row',justifyContent:'space-between',height:23}}>
-                <Text style={stypes.buypriceText}>{item.price}</Text>
-                <Text style={stypes.buynumText}>{item.num}</Text>
+            <View style={{flexDirection:'row',justifyContent:'space-between',height:23}} key={i}>
+                <Text style={stypes.buypriceText}>{parseFloat(item.price).toFixed(6)}</Text>
+                <Text style={stypes.buynumText}>{parseFloat(item.number).toFixed(6)}</Text>
             </View>
         )
     }
@@ -64,17 +134,18 @@ export default class TradingRightView extends Component{
             <View>
                 <View style={{marginLeft:5,marginRight:10,height:23*8}}>
                         {
-                            this.state.sellList.map((item,i)=>this.sellListItem(item))
+                            
+                            this.state.sellList.map((item,i)=>this.sellListItem(item,i,0))
                         }
                 </View>
                 <View style={{flexDirection:'row',justifyContent:'space-between',marginLeft:5,marginRight:10,borderStyle:'dashed',borderColor:'rgb(164,173,178)',borderWidth:1,height:30}}>
-                        <Text style={stypes.sellContent}>10.001000</Text>
+                        <Text style={stypes.sellContent}>{parseFloat(this.state.finishPrice).toFixed(4)}</Text>
                         <Text style={stypes.sellContent}>￥</Text>
-                        <Text style={stypes.sellContent}>10.451200</Text>
+                        <Text style={stypes.sellContent}>{parseFloat(this.state.finishNum).toFixed(4)}</Text>
                 </View>
                 <View style={{marginLeft:5,marginRight:10,height:23*8}}>
                         {
-                            this.state.buyList.map((item,i)=>this.buyListItem(item))
+                            this.state.buyList.map((item,i)=>this.buyListItem(item,i,0))
                         }
                 </View>
             </View>
@@ -86,13 +157,13 @@ export default class TradingRightView extends Component{
         return (
             <View>
                 <View style={{flexDirection:'row',justifyContent:'space-between',marginLeft:5,marginRight:10,borderStyle:'dashed',borderColor:'rgb(164,173,178)',borderWidth:1,height:30}}>
-                    <Text style={stypes.sellContent}>10.001000</Text>
+                    <Text style={stypes.sellContent}>{parseFloat(this.state.finishPrice).toFixed(4)}</Text>
                     <Text style={stypes.sellContent}>￥</Text>
-                    <Text style={stypes.sellContent}>10.451200</Text>
+                    <Text style={stypes.sellContent}>{parseFloat(this.state.finishNum).toFixed(4)}</Text>
                 </View>
                 <View style={{marginLeft:5,marginRight:10,height:23*16}}>
                         {
-                            this.state.buyList.map((item,i)=>this.buyListItem(item))
+                            this.state.buyList.map((item,i)=>this.buyListItem(item,i,1))
                         }
                 </View>
             </View>
@@ -105,13 +176,13 @@ export default class TradingRightView extends Component{
                
                 <View style={{marginLeft:5,marginRight:10,height:23*16}}>
                         {
-                            this.state.sellList.map((item,i)=>this.sellListItem(item))
+                            this.state.sellList.map((item,i)=>this.sellListItem(item,i,1))
                         }
                 </View>
                 <View style={{flexDirection:'row',justifyContent:'space-between',marginLeft:5,marginRight:10,borderStyle:'dashed',borderColor:'rgb(164,173,178)',borderWidth:1,height:30}}>
-                    <Text style={stypes.buyContent}>10.001000</Text>
+                    <Text style={stypes.buyContent}>{parseFloat(this.state.finishPrice).toFixed(4)}</Text>
                     <Text style={stypes.buyContent}>￥</Text>
-                    <Text style={stypes.buyContent}>10.451200</Text>
+                    <Text style={stypes.buyContent}>{parseFloat(this.state.finishNum).toFixed(4)}</Text>
                  </View>
             </View>
         )
@@ -151,6 +222,11 @@ export default class TradingRightView extends Component{
                         </View>
                     </TouchableOpacity>
                 </View>
+                <Load 
+                ref = {(Load) => this.Load = Load}
+                title = {this.state.loadText}
+                type = {this.state.type}
+                />
             </View>
         )
     }

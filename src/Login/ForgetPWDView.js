@@ -36,13 +36,14 @@ export default class ForgetPWDView extends Component{
 
     suerBtnClick(){
         Keyboard.dismiss();
+        let {types}=this.props.navigation.state.params;
         if(this.state.emailText === ''){
             this.setState({msg:'请输入邮箱',type:3},() => {
                 this.Msg.show();
             });
 
             return;
-        }else if(!globar.emailRegular.test(this.state.emailText)){
+        }else if(!globar.emailRegular.test(this.state.emailText)&&types==1){
             this.setState({msg:'邮箱格式不正确',type:3},() => {
                 this.Msg.show();
             });
@@ -63,13 +64,16 @@ export default class ForgetPWDView extends Component{
         this.setState({msg:'正在验证...',type:2},() => {
             this.Msg.show();
         });
-        
-        let pramas={email:this.state.emailText,code:this.state.code};
-        Request.post(Config.api.homeList+'v2/email/check-code',pramas,false).then((data)=>{
+        let {types}=this.props.navigation.state.params;
+        let pramas=types==1?{email:this.state.emailText,code:this.state.code}:{mobile:this.state.emailText,code:this.state.code};
+        console.log(pramas.mobile+'---'+pramas.code);
+        let url=types==1?'v2/email/check-code':'v2/sms/check-code';
+        Request.post(Config.api.homeList+url,pramas,false).then((data)=>{
             // this.Msg.hide();
             console.log(data);
             if(data.code==0){
-                this.props.navigation.navigate('EmailTextView',{'email':this.state.emailText,'data':data.data});
+                this.Msg.hide();
+                this.props.navigation.navigate('EmailTextView',{'email':this.state.emailText,'data':data.data,types:types});
             }else if (data.code==9001){
 
             }else{
@@ -78,30 +82,36 @@ export default class ForgetPWDView extends Component{
                 });
             }
         },(err)=>{
-            this.Msg.hide();
+            
             console.log('错误信息'+err);
-            alert(err);
+            // alert(err);
+            this.setState({msg:'服务器异常或网络错误',type:3},()=>{
+                this.Msg.show();
+            });
         });
 
     }
     //获取验证码
     requestMobileCode(anyWay){
         Keyboard.dismiss();
+        let {types}=this.props.navigation.state.params;
         if(this.state.emailText === ''){
-            this.setState({msg:'请输入邮箱',type:3},() => {
+            this.setState({msg:types==1?'请输入邮箱':'请输入手机号',type:3},() => {
                 this.Msg.show();
             });
             anyWay(false);
             return ;
-        }else if(!globar.emailRegular.test(this.state.emailText)){
+        }else if(!globar.emailRegular.test(this.state.emailText)&&types==1){
             this.setState({msg:'邮箱格式不正确',type:3},() => {
                 this.Msg.show();
             });
             anyWay(false);
             return ;
         }
-        let pramas={email:this.state.emailText};
-        Request.post(Config.api.homeList+'v2/email/send',pramas,false).then((data)=>{
+        let pramas=types==1?{email:this.state.emailText}:{mobile:this.state.emailText};
+        let url = '';
+        url=types==1?'v2/email/send':'v2/sms/send';
+        Request.post(Config.api.homeList+url,pramas,false).then((data)=>{
             console.log(data);
             if(data.code==0){
                 anyWay(true);
@@ -120,7 +130,9 @@ export default class ForgetPWDView extends Component{
             }
         },(err)=>{
             console.log('错误信息'+err);
-            alert(err);
+            this.setState({msg:'服务器异常或网络错误',type:3},()=>{
+                this.Msg.show();
+            });
             anyWay(false);
         });
     }
@@ -129,11 +141,12 @@ export default class ForgetPWDView extends Component{
     }
     
     render(){
+        let {types}=this.props.navigation.state.params;
         return(
             <View style={stypes.contian}>
                <TouchableOpacity activeOpacity = {1} onPress = {() => {Keyboard.dismiss()}}>
                     <View style={{height:height}}>
-                        <Text style = {stypes.emailLabel}>邮箱地址</Text>
+                        <Text style = {stypes.emailLabel}>{types==1?'邮箱地址':'手机号'}</Text>
                         <TextInput 
                                 value = {this.state.emailText}
                                 onChangeText = {(text) => this.setState({emailText:text})}

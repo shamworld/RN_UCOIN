@@ -25,8 +25,10 @@ import storage from '../../Compent/StorageUtil';
 import Config from '../../Compent/config';
 import Request from '../../Compent/Request';
 import Load from '../../Compent/loading';
+import AlertSelected from '../../Compent/DialogSelected';
 
 const {width,height}=Dimensions.get('window');
+const selectedArr = ["邮箱找回", "手机找回"];
 var userPlaceHolder='uncoinex@qq.com';
 export default class LoginView extends Component{
     constructor(props){
@@ -67,7 +69,7 @@ export default class LoginView extends Component{
             return ;
         }
         // this.LoginMobileView.show();
-
+        
         this.requestLogin();
 
 
@@ -120,14 +122,26 @@ export default class LoginView extends Component{
                 });
             }
         },(err)=>{
-            this.Load.hide();
-            console.log('错误信息'+err);
-            alert(err);
+            this.setState({loadingText:'服务器异常或网络错误',type:3},()=>{
+                this.Load.show();
+            });
         });
     }
     //忘记密码
     forgetPwd(){
-        this.props.navigation.navigate('ForgetPWDView');
+        
+        this.dialog.show("找回密码方式", selectedArr, '#333333', this.callbackSelected.bind(this));
+    }
+    // 回调
+    callbackSelected(i){
+        switch (i){
+            case 0: // 邮箱
+            this.props.navigation.navigate('ForgetPWDView',{'types':1});
+                break;
+            case 1: // 手机
+            this.props.navigation.navigate('ForgetPWDView',{'types':2});
+                break;
+        }
     }
     //注册
     reginseClick(){
@@ -180,6 +194,9 @@ export default class LoginView extends Component{
                 title = {this.state.loadingText}
                 type = {this.state.type}
                 />
+                <AlertSelected ref={(dialog)=>{
+                    this.dialog = dialog;
+                }}/>
             </View>
             
 

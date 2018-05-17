@@ -22,7 +22,8 @@ export default class MarkView extends Component{
         this.state = {
             scrollList:[
                 {'titile':'BTC','type':'1'},
-                {'titile':'UT','type':'2'},
+                {'titile':'ETH','type':'2'},
+                {'titile':'UT','type':'3'},
             ]
         }
     }

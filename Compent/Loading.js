@@ -56,7 +56,7 @@ export default class Modals extends Component {
                         style={{width:30,height:30}} 
                       source={require('../Images/图标/yes.png')} 
                       resizeMode={'contain'}/>:this.props.type==2?<ActivityIndicator animating={true}   color={"#666666"} size="large" />:''}
-                        <Text style={{fontSize:14,color:'#181818'}} >{this.props.title || '加载中...'}</Text>
+                        <Text style={{fontSize:14,color:'#181818'}} >{this.props.title||'加载中...'}</Text>
                       </View>
                 </TouchableOpacity >
               </Modal>

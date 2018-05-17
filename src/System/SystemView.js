@@ -8,7 +8,9 @@ import {
     Image
 }from 'react-native';
 import React, { Component } from 'react';
-import Msg from '../../Compent/LoadingMsg';
+import Load from '../../Compent/loading';
+import Config from '../../Compent/config';
+import Request from '../../Compent/Request';
 
 const {width,height}=Dimensions.get('window');
 export default class SystemView extends Component{
@@ -16,7 +18,8 @@ export default class SystemView extends Component{
     constructor(props){
         super(props);
         this.state={
-            msg:''
+            loadText:'',
+            type:0,
         }
     }
 
@@ -53,8 +56,8 @@ export default class SystemView extends Component{
                     </View>
                 </TouchableOpacity>
                 <View style={stypes.lineView}></View>
-                <TouchableOpacity activeOpacity={1} onPress={()=>{this.setState({msg:'请到U-Coin官网设置Google验证'},() => {
-                    this.Msg.show();
+                <TouchableOpacity activeOpacity={1} onPress={()=>{this.setState({loadText:'请到U-Coin官网设置Google验证',type:3},() => {
+                    this.Load.show();
                 })}}>
                     <View style={{flexDirection:'row',marginLeft:20,height:60,marginRight:20,justifyContent:'space-between'}}>
                         <Text style={stypes.contentText}>Google验证</Text>
@@ -73,13 +76,14 @@ export default class SystemView extends Component{
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity activeOpacity={1}>
+                <TouchableOpacity activeOpacity={1} onPress={()=>{this.props.navigation.replace('LoginView');}}>
                     <Text style={stypes.exitOutBtn}>退出</Text>
                 </TouchableOpacity>
 
-                <Msg 
-                ref = {(Msg) => this.Msg = Msg}
-                title = {this.state.msg}
+                <Load 
+                ref = {(Load) => this.Load = Load}
+                title = {this.state.loadText}
+                type = {this.state.type}
                 />
             </View>
         );

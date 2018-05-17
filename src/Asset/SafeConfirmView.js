@@ -13,22 +13,104 @@ import {
 }from 'react-native';
 import React, { Component } from 'react';
 import CountDownButton from '../../Compent/CountDownButton';
+import Load from '../../Compent/loading';
+import Config from '../../Compent/config';
+import Request from '../../Compent/Request';
 
 const {width,height}=Dimensions.get('window');
 export default class SafeConfirmView extends Component{
 
     constructor(props){
         super(props);
+        
         this.state = {
             smsText:'',
-
+            loadText:'',
+            type:0,
         }
     }
     static navigationOptions = ({navigation})=>({
         title:'安全验证',
 
     })
-   
+   //发送短信
+    requestSendSMS(_shouldStartCountting){
+        Request.post(Config.api.homeList+'v2/sms/send',null,true).then((data) => {
+            
+            
+            if(data.code==0){
+                _shouldStartCountting(true);
+                this.setState({loadText:'发送成功',type:3},()=>{
+                    this.Load.show();
+                    
+                });
+     
+                
+            }else if (data.code==9001){
+                _shouldStartCountting(false);
+                this.setState({loadText:data.msg,type:3},()=>{
+                    this.Load.show();
+                    
+                });
+                // this.props.toLogin();
+            }else{
+                _shouldStartCountting(false);
+                this.setState({loadText:data.msg,type:3},()=>{
+                    this.Load.show();
+                });
+               
+            }
+            },(error) =>{
+                _shouldStartCountting(false);
+                 console.log('错误信息'+error);
+                 this.setState({isLoading:true});
+             })
+    }
+    //提现
+    reqestRecharge(){
+        let err='';
+
+        if(this.state.addressText==''){
+            err='请输入验证码';
+        }
+
+        if(err!=''){
+            this.setState({loadText:err,type:3});
+            this.Load.show();
+            return;
+        }
+
+       let {addressText,numText,id}=this.props.navigation.state.params;
+        let params={address:addressText,number:numText,sms_code:this.state.smsText,coin_id:id};
+       Request.post(Config.api.homeList+'v2/coin/extract',params,true).then((data) => {
+            
+            
+        if(data.code==0){
+            this.setState({loadText:'提现成功',type:3},()=>{
+                this.Load.show();
+                this.props.navigation.goBack();
+            });
+ 
+            
+        }else if (data.code==9001){
+            this.setState({loadText:data.msg,type:3},()=>{
+                this.Load.show();
+                
+            });
+            // this.props.toLogin();
+        }else{
+            this.setState({loadText:data.msg,type:3},()=>{
+                this.Load.show();
+            });
+           
+        }
+        },(error) =>{
+             console.log('错误信息'+error);
+             this.setState({isLoading:true});
+         })
+
+    }
+
     render(){
         return(
             <View style={stypes.contains}>
@@ -49,7 +131,8 @@ export default class SafeConfirmView extends Component{
                         onClick={(_shouldStartCountting)=>{
                         // shouldStartCountting是一个回调函数，根据调用接口的情况在适当的时候调用它来决定是否开始倒计时
                         //请求接口返回是否发送验证码成功 然后回调回去
-                        _shouldStartCountting(true)
+                        this.requestSendSMS(_shouldStartCountting);
+                        
                         // alert(shouldStartCountting);
                         }}
                         timerEnd={
@@ -62,10 +145,15 @@ export default class SafeConfirmView extends Component{
                         />
                 </View>
                 <View style={{marginTop:20}}>
-                    <TouchableOpacity activeOpacity={1} >
+                    <TouchableOpacity activeOpacity={1} onPress={()=>this.reqestRecharge()}>
                         <Text style={stypes.btnView}>提现</Text>
                     </TouchableOpacity>
                 </View>
+                <Load 
+                ref = {(Load) => this.Load = Load}
+                title = {this.state.loadText}
+                type = {this.state.type}
+                />
             </View>
         )
     }
